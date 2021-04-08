@@ -13,7 +13,7 @@ Terraform module for deploying pre-defined set of Dataodog dashboards in [datado
 terraform init
 terraform apply -var "datadog_api_key=xxxxxxxxxxxx" -var "datadog_app_key=xxxxxxxxxxxx"
 ```
-### Or
+Or
 Create `terraform.tfvars` add the api and app key.
 
 ```
@@ -45,3 +45,63 @@ List of some widget definition
 - scatterplot_definition	- toplist_definition
 - servicemap_definition		- timeseries_definition
 ```
+## Sample Widget
+This is timeseries definition, where we can add query and remember to use scope rather than using hardcoded variable.
+```
+  widget {
+    timeseries_definition {
+      request {
+        q            = "avg:aws.applicationelb.target_response_time.average{$loadbalancer} by {loadbalancer}"
+        display_type = "line"
+        style {
+          palette    = "dog_classic"
+          line_type  = "solid"
+          line_width = "normal"
+        }
+      }
+      yaxis {
+        scale        = "linear"
+        min          = "auto"
+        max          = "auto"
+        include_zero = true
+        label        = ""
+      }
+      title_size  = 13
+      title_align = "center"
+      title       = "ALB Response Time"
+      #live_span   = "1h"
+    }
+    layout = {
+      height = 14
+      width  = 35
+      x      = 49
+      y      = 114
+    }
+  }
+```
+
+**$loadbalancer** is a variable which is defined as **template_variable** for ex:
+```
+  template_variable {
+    name = "loadbalancer"
+    prefix = "loadbalancer"
+    default = "*"
+  }
+```
+We can specify the **default** value based on the  tags we used, `default = "prod"`
+
+**NOTE** while considering `Screenboard` must consider the **widget-layout** need to define the `x`, `y`, `height` and `width` of widget. We are definging the widget size and placement on the canvas.
+ex:
+```   
+ layout = {
+      height = 14
+      width  = 36
+      x      = 123
+      y      = 135
+    }
+```
+
+## Reference
+
+- [Terraform Offical Doc on Datadog provider](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/dashboard)
+- [Managing Datadog with Terraform](https://www.datadoghq.com/blog/managing-datadog-with-terraform/)
