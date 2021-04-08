@@ -100,6 +100,15 @@ ex:
       y      = 135
     }
 ```
+## Execution
+```
+terraform init
+terraform fmt
+terraform plan -out "ecs-dash"
+terraform apply "ecs-dash"
+```
+**terraform fmt** command is used to rewrite Terraform configuration files to a canonical format and style. This command applies a subset of the Terraform language style conventions, along with other minor adjustments for readability.
+
 
 ## Reference
 
